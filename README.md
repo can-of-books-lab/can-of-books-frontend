@@ -53,7 +53,11 @@
 01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource. -->
 
 ## Estimates
-<!-- See below -->
+Name of Feature: Set Up Repos 
+Estimated Time to Complete:3hr
+Start time: 2:30 
+Finish time:8:11
+Actual time to complete:5hr
 
 ## Credit and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
