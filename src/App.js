@@ -1,15 +1,17 @@
-'use strict';
 import React from 'react';
-
-/**
- * @author
- * @class App
- **/
+import Main from './Main.js'
 
 class App extends React.Component {
-  state = {};
+
+  
   render() {
-    return <div>App</div>;
+    return (
+      <>
+
+        <Main/>
+  
+      </>
+    );
   }
 }
 
