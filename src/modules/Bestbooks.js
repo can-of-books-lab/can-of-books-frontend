@@ -12,10 +12,12 @@ class BestBooks extends React.Component {
       bookData: [],
     };
   }
+    /* TODO: Make a GET request to your API to fetch books for the logged in user  */
+
   handleGetBooks = async () => {
     try {
       let result = await axios.get(
-        `${process.env.REACT_APP_SERVER}/books?email=sheyna@codefellows.com`
+        `${process.env.REACT_APP_SERVER}/books?email=${this.props.user.email}`
       );
       this.setState({
         bookData: result.data,
@@ -31,12 +33,12 @@ class BestBooks extends React.Component {
   componentDidMount() {
     this.handleGetBooks();
   }
-
+    /* TODO: render user's books in a Carousel */
   render() {
     console.log(this.state.bookData);
     return (
       <>
-        {this.state.books.length ? (
+        {this.state.bookData.length ? (
           <Row xs={1} sm={2} md={3} lg={4} className="mt-5">
             {this.state.bookData.map((book, index) => (
               <Col key={index}>

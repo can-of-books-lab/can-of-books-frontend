@@ -1,5 +1,6 @@
 import React from "react";
 import { Navbar, NavItem } from "react-bootstrap";
+import LogoutButton from "./LogoutButton"
 import { Link } from "react-router-dom";
 import '../Header.css';
 
@@ -12,8 +13,13 @@ class Header extends React.Component {
           <Link to="/" className="nav-link">Home</Link>
         </NavItem>
         {/* TODO: if the user is logged in, render a navigation link to profile page */}
+        <NavItem>
           <Link to="/Profile" className="nav-link">Profile</Link>
+        </NavItem>
         {/* TODO: if the user is logged in, render the `LogoutButton` */}
+        {this.props.user &&
+        <LogoutButton onLogout={this.props.onLogout} />
+        }
       </Navbar>
     );
   }
