@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 
 import axios from "axios";
 import AddBookButton from "./AddBookButton";
+import DeleteButton from "./DeleteButton";
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -31,35 +32,48 @@ class BestBooks extends React.Component {
     }
   };
 
+  handlePostBook = async (newBook) => {
+    try {
+      let url = `${process.env.REACT_APP_SERVER}/books`;
+      let createdBook = await axios.post(url, newBook);
+      console.log(createdBook.data);
+      this.setState({ bookData: [...this.state.bookData, createdBook.data] });
+    } catch (error) {
+      console.log("Error in the post request.", error.response.data);
+      alert("Sorry, there was an error.  Your book wasn't added");
+    }
+  };
+  handleDelete = async (id) => {
+    try {
+      let url = `${process.env.REACT_APP_SERVER}/books/${id}?${this.props.user.email}`;
+      await axios.delete(url);
+      const updatedBooks = this.state.bookData.filter(
+        (book) => book._id !== id
+      );
+      this.setState({
+        bookData: updatedBooks,
+      });
+      console.log("item deleted");
+    } catch (error) {
+      console.log("Error in the delete request.", error.response.data);
+      alert("error in the delete method");
+    }
+  };
+
   componentDidMount() {
     this.handleGetBooks();
   }
-
-  handlePostBook = async (newBook) => {
-    try {
-      let url = `${process.env.REACT_APP_SERVER}/books`
-      let createdBook = await axios.post(url, newBook) 
-        console.log(createdBook.data);
-        this.setState({bookData: [...this.state.bookData, createdBook.data]})
-    } catch (error) {
-      console.log('Error in the post request.', error.response.data)
-      alert('Sorry, there was an error.  Your book wasn\'t added')
-    }
-  }
-
   /* TODO: render user's books in a Carousel */
   render() {
     console.log(this.state.bookData);
     return (
-     <>
+      <>
+        <AddBookButton handlePostBook={this.handlePostBook} />
         {this.state.bookData.length ? (
           <Row xs={1} sm={2} md={3} lg={4} className="mt-5">
-              <Col>
-                <AddBookButton
-                  handlePostBook={this.handlePostBook}
-                  />
-                <Carousel fade>
-                  {this.state.bookData.map((book, index) => (
+            <Col>
+              <Carousel fade>
+                {this.state.bookData.map((book, index) => (
                   <Carousel.Item key={index}>
                     <img
                       className="d-block w-100"
@@ -72,9 +86,14 @@ class BestBooks extends React.Component {
                       <p>{book.status}</p>
                       <p>{book.email}</p>
                     </Carousel.Caption>
-                  </Carousel.Item>))}
-                </Carousel>
-              </Col>
+                    <DeleteButton
+                      handleDelete={this.handleDelete}
+                      book={book}
+                    />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            </Col>
           </Row>
         ) : (
           <h3>No Books Found :(</h3>
