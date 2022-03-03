@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 import axios from "axios";
 import AddBookButton from "./AddBookButton";
 import DeleteButton from "./DeleteButton";
+import UpdateBookButton from "./UpdateBookButton";
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class BestBooks extends React.Component {
     } catch (e) {
       console.log(
         "we have an error in the handleGetBooks function:",
-        e.response.data
+        e.message
       );
     }
   };
@@ -36,13 +37,13 @@ class BestBooks extends React.Component {
     try {
       let url = `${process.env.REACT_APP_SERVER}/books`;
       let createdBook = await axios.post(url, newBook);
-      console.log(createdBook.data);
       this.setState({ bookData: [...this.state.bookData, createdBook.data] });
     } catch (error) {
       console.log("Error in the post request.", error.response.data);
       alert("Sorry, there was an error.  Your book wasn't added");
     }
   };
+
   handleDelete = async (id) => {
     try {
       let url = `${process.env.REACT_APP_SERVER}/books/${id}?${this.props.user.email}`;
@@ -55,15 +56,32 @@ class BestBooks extends React.Component {
       });
       console.log("item deleted");
     } catch (error) {
-      console.log("Error in the delete request.", error.response.data);
+      console.log("Error in the delete request.", error.message);
       alert("error in the delete method");
     }
   };
+
+  //add method that send object to the back end for update
+  //this method needs to recieve the object from the updatebookform component
+  handleUpdate = async (bookToUpdate) => {
+    try{
+        let url = `${process.env.REACT_APP_SERVER}/books/${bookToUpdate._id}`
+        let updatedBook = await axios.put(url, bookToUpdate);
+        let updatedBookData = this.state.bookData.map(existingBook => existingBook._id === bookToUpdate._id ? updatedBook.data : existingBook);
+        this.setState({
+          bookData: updatedBookData
+        });
+    }catch(error){
+      console.log("Error in the update request.", error.message);
+      alert("error in the update method");
+    }
+  }
 
   componentDidMount() {
     this.handleGetBooks();
   }
   /* TODO: render user's books in a Carousel */
+
   render() {
     console.log(this.state.bookData);
     return (
@@ -90,6 +108,9 @@ class BestBooks extends React.Component {
                       handleDelete={this.handleDelete}
                       book={book}
                     />
+                    <UpdateBookButton
+                      handleUpdate={this.handleUpdate}
+                      book={book}/>
                   </Carousel.Item>
                 ))}
               </Carousel>
