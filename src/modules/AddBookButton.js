@@ -22,7 +22,7 @@ class AddBookButton extends React.Component {
           show={this.state.show}
           closeModal={this.closeModal}
           handlePostBook={this.props.handlePostBook}
-         />
+          />
 
         : <Button onClick={() => this.setState({ show: true })}>Create Book</Button>
       }
