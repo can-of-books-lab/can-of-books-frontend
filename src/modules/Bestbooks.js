@@ -2,7 +2,7 @@ import React from "react";
 import Carousel from "react-bootstrap/Carousel";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-
+import { withAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import AddBookButton from "./AddBookButton";
 import DeleteButton from "./DeleteButton";
@@ -20,7 +20,7 @@ class BestBooks extends React.Component {
   handleGetBooks = async () => {
     try {
       let result = await axios.get(
-        `${process.env.REACT_APP_SERVER}/books?email=${this.props.user.email}`
+        `${process.env.REACT_APP_SERVER}/books?email=${this.props.auth0.user.email}`
       );
       this.setState({
         bookData: result.data,
@@ -83,7 +83,7 @@ class BestBooks extends React.Component {
   /* TODO: render user's books in a Carousel */
 
   render() {
-    console.log(this.state.bookData);
+    console.log(this.props.auth0.user.email);
     return (
       <>
         <AddBookButton handlePostBook={this.handlePostBook} />
@@ -124,4 +124,4 @@ class BestBooks extends React.Component {
   }
 }
 
-export default BestBooks;
+export default withAuth0(BestBooks);
