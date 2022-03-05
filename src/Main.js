@@ -1,19 +1,22 @@
 import React from "react";
+import { withAuth0 } from "@auth0/auth0-react";
 import BestBooks from "./modules/Bestbooks";
 import Header from "./modules/Header.js";
 import Footer from "./modules/Footer.js";
-import Login from "./modules/Login.js";
+// import Login from "./modules/Login.js";
 import Profile from "./modules/Profile.js";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import LoginButton from "./modules/LoginButton";
+import LogoutButton from "./modules/LogoutButton";
 
 class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null,
+      user: this.props.auth0.user || null
     };
   }
 
@@ -30,7 +33,7 @@ class Main extends React.Component {
   };
 
   render() {
-    console.log(this.state.bookData);
+    console.log(this.state.user);
     return (
       <>
         <Router>
@@ -38,15 +41,18 @@ class Main extends React.Component {
           <Switch>
             {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
             <Route exact path="/">
-              {this.state.user ? (
-                <BestBooks user={this.state.user} />
+              {this.props.auth0.isAuthenticated ? (
+                <>
+                  <BestBooks user={this.state.user} />
+                  <LogoutButton/>
+                </>
               ) : (
-                <Login loginHandler={this.loginHandler} />
+                <LoginButton />
               )}
             </Route>
             {/* TODO: add a route with a path of '/profile' that renders a `Profile` component */}
             <Route exact path="/profile">
-              {this.state.user && <Profile user={this.state.user} />}
+              {this.props.auth0.isAuthenticated ? <Profile user={this.state.user} loginHandler={this.loginHandler} /> : <h2>Please Log In</h2>}
             </Route>
           </Switch>
           <Footer />
@@ -56,4 +62,4 @@ class Main extends React.Component {
   }
 }
 
-export default Main;
+export default withAuth0(Main);
